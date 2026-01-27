@@ -6,4 +6,4 @@ e = []
 for i in range(3):
     e.append(values.y[i] - yp.y_hat[i])
 
-#print("error e =", e)
+# print("error e =", e)

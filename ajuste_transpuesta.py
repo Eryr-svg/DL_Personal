@@ -1,3 +1,6 @@
+from errorvector import e
+from values_xwyalpha import X
+
 grad = [0, 0]
 
 for j in range(2):          # columnas
@@ -6,4 +9,4 @@ for j in range(2):          # columnas
         suma = suma + X[i][j] * e[i]
     grad[j] = suma
 
-print("X^T e =", grad)
+# print("X^T e =", grad)
