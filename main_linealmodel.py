@@ -8,7 +8,6 @@ import nueva_prediccion as np
 import nuevo_vectorerror_errortotal as net
 import lost_function as lf
 
-
 print("y_hat =", yp.y_hat)
 print("error vector", evector.e)
 print("ErrorTotal1 =", errort.ErrorTotal1)
@@ -16,4 +15,4 @@ print("Correccion de pesos = ", at.grad)
 print("Correccion/disminucion del error total = ", ap.w)
 print("Nueva iteracion = ", np.y_hat2)
 print("Nuevo error total = ", net.ErrorTotal2)
-print("Costo de perdida = ", lf.L)
+print("Funcion de perdida L = ", lf.L)
