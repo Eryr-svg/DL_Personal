@@ -16,7 +16,7 @@ with open(ruta_archivo, "r", encoding="utf-8") as archivo:
         celdas = filas.strip().split(',')
 
         #seleccion de las columnas
-        #colmna A: niños )indice 0), B: altura (indice 1), C: peso (indice 2)
+        #colmna A: niños(indice 0), B: altura (indice 1), C: peso (indice 2)
         altura = celdas[1].strip()
         peso = celdas[2].strip()
 
