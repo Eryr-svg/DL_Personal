@@ -1,5 +1,5 @@
 #nombre del archivo
-ruta_archivo = 'datos.csv.csv'
+ruta_archivo = 'practica2_ml.csv'
 
 #lista para guardar los datos del rango
 rango_altura_peso = []
