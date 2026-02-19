@@ -1,3 +1,5 @@
+import matplotlib.pyplot as plt
+import numpy as np
 #Extraer los datos
 
 ruta_archivo = "practica2_ml.csv"
