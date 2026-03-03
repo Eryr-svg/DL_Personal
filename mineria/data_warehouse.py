@@ -1,3 +1,4 @@
+# Step 0 — Importar librerías
 import pandas as pd
 from pathlib import Path
 
@@ -18,7 +19,7 @@ df_limpio = df_limpio.apply(lambda x: x.str.strip() if x.dtype == "object" else 
 df_limpio.info()
 
 # Step 5 — Preparar los datos para un Data Warehouse
-df_dw = df_limpio[['fecha', 'producto', 'categoria', 'ventas']]
+df_dw = df_limpio[['fecha', 'producto', 'cliente', 'ventas']]
 
 # Step 6 — Guardar el dataset limpio (listo para el DW)
 Path("csv").mkdir(exist_ok=True)
