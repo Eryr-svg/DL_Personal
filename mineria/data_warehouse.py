@@ -1,4 +1,3 @@
-# Step 0 — Importar librerías
 import pandas as pd
 from pathlib import Path
 
