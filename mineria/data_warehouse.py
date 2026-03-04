@@ -19,7 +19,7 @@ df_limpio = df_limpio.apply(lambda x: x.str.strip() if x.dtype == "object" else 
 df_limpio.info()
 
 # Step 5 — Preparar los datos para un Data Warehouse
-df_dw = df_limpio[['fecha', 'producto', 'cliente', 'ventas']]
+df_dw = df_limpio[['fecha', 'producto', 'categoria', 'ventas']]
 
 # Step 6 — Guardar el dataset limpio (listo para el DW)
 Path("csv").mkdir(exist_ok=True)
@@ -53,25 +53,25 @@ dim_producto = (
 dim_producto["producto_id"] = dim_producto.index + 1
 dim_producto = dim_producto[["producto_id", "producto"]]
 
-dim_cliente = (
-    df_dw[["cliente"]]
+dim_categoria = (
+    df_dw[["categoria"]]
     .drop_duplicates()
     .reset_index(drop=True)
 )
-dim_cliente["cliente_id"] = dim_cliente.index + 1
-dim_cliente = dim_cliente[["cliente_id", "cliente"]]
+dim_categoria["categoria_id"] = dim_categoria.index + 1
+dim_categoria = dim_categoria[["categoria_id", "categoria"]]
 
-dim_tiempo.head(), dim_producto.head(), dim_cliente.head()
+dim_tiempo.head(), dim_producto.head(), dim_categoria.head()
 
 # Step 3 — Crear tabla de hechos (Fact) con llaves foráneas
 map_producto = dict(zip(dim_producto["producto"], dim_producto["producto_id"]))
-map_cliente = dict(zip(dim_cliente["cliente"], dim_cliente["cliente_id"]))
+map_categoria = dict(zip(dim_categoria["categoria"], dim_categoria["categoria_id"]))
 
 fact_ventas = df_dw.copy()
 fact_ventas["date_id"] = fact_ventas["fecha"].dt.strftime("%Y%m%d").astype(int)
 fact_ventas["producto_id"] = fact_ventas["producto"].map(map_producto)
-fact_ventas["cliente_id"] = fact_ventas["cliente"].map(map_cliente)
-fact_ventas = fact_ventas[["date_id", "producto_id", "cliente_id", "ventas"]]
+fact_ventas["categoria_id"] = fact_ventas["categoria"].map(map_categoria)
+fact_ventas = fact_ventas[["date_id", "producto_id", "categoria_id", "ventas"]]
 fact_ventas.head()
 
 # Step 4 — Cargar el modelo estrella a SQLite (DW real)
@@ -83,7 +83,7 @@ conn = sqlite3.connect(db_path)
 
 dim_tiempo.to_sql("dim_tiempo", conn, if_exists="replace", index=False)
 dim_producto.to_sql("dim_producto", conn, if_exists="replace", index=False)
-dim_cliente.to_sql("dim_cliente", conn, if_exists="replace", index=False)
+dim_categoria.to_sql("dim_categoria", conn, if_exists="replace", index=False)
 fact_ventas.to_sql("fact_ventas", conn, if_exists="replace", index=False)
 
 conn.close()
@@ -102,13 +102,13 @@ ORDER BY total_ventas DESC;
 ventas_por_producto = pd.read_sql_query(q1, conn)
 
 q2 = """
-SELECT c.cliente, SUM(f.ventas) AS total_ventas
+SELECT c.categoria, SUM(f.ventas) AS total_ventas
 FROM fact_ventas f
-JOIN dim_cliente c ON c.cliente_id = f.cliente_id
-GROUP BY c.cliente
+JOIN dim_categoria c ON c.categoria_id = f.categoria_id
+GROUP BY c.categoria
 ORDER BY total_ventas DESC;
 """
-ventas_por_cliente = pd.read_sql_query(q2, conn)
+ventas_por_categoria = pd.read_sql_query(q2, conn)
 
 q3 = """
 SELECT t.anio, t.mes, SUM(f.ventas) AS total_ventas
@@ -120,7 +120,7 @@ ORDER BY t.anio, t.mes;
 ventas_por_mes = pd.read_sql_query(q3, conn)
 
 conn.close()
-ventas_por_producto, ventas_por_cliente, ventas_por_mes
+ventas_por_producto, ventas_por_categoria, ventas_por_mes
 
 # Step 6 — Exportar tablas del DW a CSV
 CSV_DIR = Path("csv")
@@ -129,7 +129,7 @@ print("Los CSV se guardarán en:", CSV_DIR.resolve())
 
 dim_tiempo.to_csv(CSV_DIR / "dim_tiempo.csv", index=False)
 dim_producto.to_csv(CSV_DIR / "dim_producto.csv", index=False)
-dim_cliente.to_csv(CSV_DIR / "dim_cliente.csv", index=False)
+dim_categoria.to_csv(CSV_DIR / "dim_categoria.csv", index=False)
 fact_ventas.to_csv(CSV_DIR / "fact_ventas.csv", index=False)
 
-["dim_tiempo.csv", "dim_producto.csv", "dim_cliente.csv", "fact_ventas.csv"]
+["dim_tiempo.csv", "dim_producto.csv", "dim_categoria.csv", "fact_ventas.csv"]
