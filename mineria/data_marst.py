@@ -23,7 +23,7 @@ if not CSV_PATH.exists():
 conn_dw = sqlite3.connect(DW_PATH)
 
 dim_producto = pd.read_sql_query("SELECT * FROM dim_producto;", conn_dw)
-dim_cliente = pd.read_sql_query("SELECT * FROM dim_cliente;", conn_dw)
+dim_categoria = pd.read_sql_query("SELECT * FROM dim_categoria;", conn_dw)
 dim_tiempo = pd.read_sql_query("SELECT * FROM dim_tiempo;", conn_dw)
 fact_ventas = pd.read_sql_query("SELECT * FROM fact_ventas;", conn_dw)
 
